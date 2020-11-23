@@ -1,6 +1,8 @@
 **/__pycache__
 **/*.pyc
-/venv/
+/twitterVenv
 .DS_Store
 .vscode
 /rawTwitterData
+/jptnbTest
+/.ipynb_checkpoints

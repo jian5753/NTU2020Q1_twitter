@@ -17,7 +17,7 @@ def jsonFileReader(dirPathStr):
 
     try:
         articleCnt = len(dataLst)
-        twitterRawDf = pd.DataFrame(dataLst).to_html(classes='data')
+        twitterRawDf = pd.DataFrame(dataLst).sample(n= 5).to_html(classes='data')
     except:
         twitterRawDf = pd.DataFrame()
     return articleCnt, twitterRawDf
