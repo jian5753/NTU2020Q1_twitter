@@ -5,13 +5,10 @@
 
 {%block page_content%}
 <div class="page_content">
-	<h1>Hello, the chosen directory is: {%if name%}{{name}}{%else%}{%endif%}!</h1>
-</div>
-{{wtf.quick_form(form)}}
-<div class="page_content">
 	<h1>there's {{articleCnt}} json files in this folder</h1>
 </div>
 <div class="page_content">
 	{{twitterRawDf|safe}}
 </div>
+<button onClick="window.location.reload();">Refresh Page</button>
 {%endblock%}

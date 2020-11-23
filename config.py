@@ -7,6 +7,7 @@ Created on Thu Oct  8 14:58:17 2020
 
 
 import os
+import pathlib
 basedir=os.path.abspath(os.path.dirname(__file__))
 
 class Config:
@@ -42,6 +43,13 @@ config={
     'production':ProductionConfig,
     
     'default':DevelopmentConfig
+}
+
+pathConfig={
+    'projectRoot' : pathlib.Path(__file__).parent,
+    'dataStream': pathlib.Path(__file__).parent.joinpath('rawTwitterData/raw'),
+    'tokenizedFile': pathlib.Path(__file__).parent.joinpath('rawTwitterData/tokenized.json'),
+    'woJapFile': pathlib.Path(__file__).parent.joinpath('rawTwitterData/woJap.json')
 }
 
 

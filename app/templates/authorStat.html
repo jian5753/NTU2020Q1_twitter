@@ -1,0 +1,14 @@
+{%extends "base.html"%}
+{%import "bootstrap/wtf.html" as wtf%}
+
+{%block title%}wordStat{%endblock%}
+
+{%block page_content%}
+<div class="page_content">
+	<h1>statistics of authors</h1>
+</div>
+<div class="page_content">
+	{{authorStatTb|safe}}
+</div>
+{{wtf.quick_form(form)}}
+{%endblock%}
