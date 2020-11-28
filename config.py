@@ -47,9 +47,12 @@ config={
 
 pathConfig={
     'projectRoot' : pathlib.Path(__file__).parent,
-    'dataStream': pathlib.Path(__file__).parent.joinpath('rawTwitterData/raw'),
-    'tokenizedFile': pathlib.Path(__file__).parent.joinpath('rawTwitterData/tokenized.json'),
-    'woJapFile': pathlib.Path(__file__).parent.joinpath('rawTwitterData/woJap.json')
+    'dataStream': pathlib.Path(__file__).parent.joinpath('dataStream'),
+    'raw': pathlib.Path(__file__).parent.joinpath('dataStream/raw'),
+    'tokenizedFile': pathlib.Path(__file__).parent.joinpath('dataStream/tokenized.json'),
+    'woJapFile': pathlib.Path(__file__).parent.joinpath('dataStream/woJap.json'),
+    'w2vModel': pathlib.Path(__file__).parent.joinpath('models/twitterW2Vmodel.model'),
+    'circleTb': pathlib.Path(__file__).parent.joinpath('dataStream/circleTb.json')
 }
 
 

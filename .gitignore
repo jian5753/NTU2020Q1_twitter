@@ -3,6 +3,7 @@
 /twitterVenv
 .DS_Store
 .vscode
-/rawTwitterData
+/dataStream
 /jptnbTest
 /.ipynb_checkpoints
+/models
