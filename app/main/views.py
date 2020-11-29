@@ -85,10 +85,20 @@ def topicTag():
     f.close()
     circleTb = pd.read_json(pathConfig['dataStream'].joinpath('circleTb.json'), orient= 'split')
     scoreTb = inFunc.grading(tokenizedSents, circleTb)
-    
     print(scoreTb.head())
+
+    print(scoreTb.shape)
+    tableLst = []
+    for groupN in range(int(scoreTb.shape[1] - 1)):
+        colName = f'group_{groupN + 1}'
+        view1 = scoreTb[['index', colName]].sort_values(by= colName, ascending= False).iloc[:20]
+        rawTb = pd.read_json(pathConfig['woJapFile'], orient= 'split')[['content']].reset_index()
+        view2 = view1.merge(rawTb, left_on= 'index', right_on= 'index')
+        tableLst.append(view2.to_html(index= False))
+    
     return(
         render_template(
-            'topicTag.html'
-        )
+            'topicTag.html',
+            tableLst = tableLst
+       )
     )

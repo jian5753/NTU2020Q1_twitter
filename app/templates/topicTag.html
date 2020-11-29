@@ -7,4 +7,9 @@
 <div class="page_content">
 	<h1>topic tag</h1>
 </div>
+<div class="page_content">
+	{% for table in tableLst %}
+		{{table|safe}}
+	{% endfor %}
+</div>
 {%endblock%}

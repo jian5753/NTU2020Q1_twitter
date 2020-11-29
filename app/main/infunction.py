@@ -82,7 +82,7 @@ def grading(tokenizedLst, circleTb):
                 except KeyError:
                     continue
             scoreDict[currentGp].append(score / len(session))
-    scoreTb = pd.DataFrame(scoreDict)
+    scoreTb = pd.DataFrame(scoreDict).reset_index()
     return scoreTb
     
 
