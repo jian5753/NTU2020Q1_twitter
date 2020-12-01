@@ -2,10 +2,47 @@ import pathlib
 import json
 from flask.globals import session
 import pandas as pd
+from nltk.tokenize import TweetTokenizer
 from nltk.corpus import stopwords
 from gensim.models import Word2Vec
 from sklearn.cluster import KMeans
 from config import pathConfig
+
+def json2df(dirPath):
+    print('function called - json2df')
+    dataLst = []
+    if dirPath.exists():
+        for jsonFile in dirPath.glob('*.json'):
+            with open(jsonFile, 'r') as jf:
+                try:
+                    jfData = json.load(jf)
+                except:
+                    continue
+                dataLst.extend(jfData)
+            jf.close()
+
+    return pd.DataFrame(dataLst)
+     
+
+def allRawGen(rawDirPath):
+    allRawDf = json2df(rawDirPath)
+    allRawDf.drop(list(range(1, 9)), inplace= True)
+    allRawDf.to_json(pathConfig['woJapFile'], orient= 'split')
+    
+def tokenizedGen():
+    allRawDf = pd.read_json(pathConfig['woJapFile'], orient= 'split')
+    tweet_tokenizer = TweetTokenizer()
+    
+    tokenizedLst = []
+    for rowNum, rowData in allRawDf.iterrows():
+        content = rowData['content']
+        tokenizedLst.append(tweet_tokenizer.tokenize(content.lower())) 
+        toPrint = str(rowNum)
+        print(" " * (10 - len(toPrint)) + toPrint, end='\r')
+
+    with open(str(pathConfig['tokenizedFile']), 'w') as opFile:
+        json.dump(tokenizedLst, opFile)
+    opFile.close()
 
 def jsonFileReader(dirPathStr):
     dirPath = pathlib.Path(dirPathStr)

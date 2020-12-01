@@ -26,6 +26,26 @@ def index():
         )
     )
 
+@main.route('/dataManagement', methods = ['GET', 'POST'])
+def dataManagement():
+    rawDataPath = pathConfig['raw']
+    ifRawExists = rawDataPath.exists()
+    return(
+        render_template(
+            'dataManagement.html',
+            rawDataPath = rawDataPath,
+            ifRawExists = ifRawExists
+        )
+    )
+
+@main.route('/dataManagement/refresh', methods = ['GET', 'POST'])
+def dataFlowRefresh():
+    print(len(list(pathConfig['raw'].glob("*.json"))))
+    inFunc.allRawGen(pathConfig['raw'])
+    inFunc.tokenizedGen()
+    return redirect('/dataManagement')
+
+
 @main.route('/authorStat', methods= ['GET', 'POST'])
 def authorStat():
     form = KeyWordForm()
