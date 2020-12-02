@@ -6,4 +6,4 @@
 /dataStream/**/*.json
 /jptnbTest
 /.ipynb_checkpoints
-/models
+/models/**/*.model
