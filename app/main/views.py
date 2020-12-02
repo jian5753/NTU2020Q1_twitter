@@ -1,16 +1,13 @@
-from sys import path
-from app.main import infunction
-from datetime import datetime
-from os import pathconf
-from typing import OrderedDict
-from flask import render_template, session, redirect, url_for
-from flask import app
+from flask import render_template, session, redirect
+from gensim.models.word2vec import Word2Vec
 from . import main
-from .forms import KeyWordForm, wordStatForm
+from .forms import KeyWordForm, wordStatForm, NewTopicForm, EditTopicForm, DeleteTopicForm
 from . import infunction as inFunc
+from . import topic
 import pandas as pd
 from config import pathConfig
 import json
+import pickle
 # from .. import db
 # from ..models import User
 
@@ -52,6 +49,100 @@ def dataFlowRefresh():
 
     return redirect('/dataManagement')
 
+@main.route('/dataManagement/retrain', methods = ['GET', 'POST'])
+def wvModelRetrain():
+    with open(str(pathConfig['tokenizedFile']), 'r') as f:
+        sentences = json.load(f)
+    f.close()
+    model = Word2Vec(sentences= sentences)
+    model.save(str(pathConfig['w2vModel'])) 
+    return redirect('/dataManagement')
+@main.route('/topicManagement', methods = ['GET'])
+def topicManagement():
+    return(
+        render_template(
+            'topicManagement.html'
+        )
+    )
+@main.route('/topicManagement/addTopic', methods = ['GET', 'POST'])
+def topics():
+    form = NewTopicForm()
+
+    if form.validate_on_submit():
+        topicName = form.topicName.data
+        test = topic.Topic(topicName)
+        #test.addKeyWord('covid', 1)
+        #test.topicRelation()
+        opPath = str(pathConfig['modelFolder'].joinpath(f'{topicName}.topic'))
+        
+        with open(opPath, 'wb') as f:
+            pickle.dump(test, f)
+        f.close()
+        return redirect('/topicManagement/addTopic')
+    
+    return(
+        render_template(
+            'topic_add.html',
+            form= form
+        )
+    )
+@main.route('/topicManagement/edit', methods = ['GET', 'POST'])
+def topicEditor():
+    form = EditTopicForm()
+    form.topicToEdit.choices = [x.stem for x in list(pathConfig['modelFolder'].glob('*.topic'))]
+
+    if form.validate_on_submit():
+        # load topic obj pickle
+        topicName = form.topicToEdit.data
+        topicObjPath = list(pathConfig['modelFolder'].glob(f'{topicName}.topic'))[0]
+
+        with open(str(topicObjPath), 'rb') as f:
+            targetTopic = pickle.load(f)
+        f.close()
+        
+        # add new key words
+        newKeyWords = form.newKeyWord.data.split(', ')
+        print(newKeyWords)
+        weightLst = form.keyWordWeight.data.split(', ')
+        for i, keyword in enumerate(newKeyWords):
+            weight = int(weightLst[i])
+            targetTopic.addKeyWord(keyword, weight)
+
+        # save changes
+        with open(str(topicObjPath), 'wb') as f:
+            pickle.dump(targetTopic, f)
+        f.close()
+
+    return(
+        render_template(
+            'topic_edit.html',
+            form = form
+        )
+    )
+
+@main.route('/topicManagement/delete', methods= ['GET', 'POST'])
+def deleteTopic():
+    form = DeleteTopicForm()
+    form.topicToDel.choices = [(x.stem, x.stem) for x in list(pathConfig['modelFolder'].glob('*.topic'))]
+
+    if form.validate_on_submit():
+        selected = form.topicToDel.data
+        for topicName in selected:
+            topicObjPath = list(pathConfig['modelFolder'].glob(f'{topicName}.topic'))[0]
+            with open(str(topicObjPath), 'rb') as f:
+                targetTopic = pickle.load(f)
+            f.close()
+            targetTopic.emptySelf()
+
+            with open(str(topicObjPath), 'wb') as f:
+                pickle.dump(targetTopic, f)
+            f.close() 
+    return(
+        render_template(
+            'topic_delete.html',
+            form = form
+       )
+    ) 
 
 @main.route('/authorStat', methods= ['GET', 'POST'])
 def authorStat():

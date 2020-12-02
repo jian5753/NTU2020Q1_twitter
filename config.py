@@ -52,6 +52,7 @@ pathConfig={
     'tokenizedFile': pathlib.Path(__file__).parent.joinpath('dataStream/tokenized.json'),
     'stopLst': pathlib.Path(__file__).parent.joinpath('dataStream/stopLst.json'),
     'woJapFile': pathlib.Path(__file__).parent.joinpath('dataStream/woJap.json'),
+    'modelFolder': pathlib.Path(__file__).parent.joinpath('models'),
     'w2vModel': pathlib.Path(__file__).parent.joinpath('models/twitterW2Vmodel.model'),
     'circleTb': pathlib.Path(__file__).parent.joinpath('dataStream/circleTb.json')
 }
