@@ -32,7 +32,8 @@ def allRawGen(rawDirPath):
 def tokenizedGen():
     allRawDf = pd.read_json(pathConfig['woJapFile'], orient= 'split')
     tweet_tokenizer = TweetTokenizer()
-    
+     
+    # raw tokenized
     tokenizedLst = []
     for rowNum, rowData in allRawDf.iterrows():
         content = rowData['content']
@@ -40,8 +41,24 @@ def tokenizedGen():
         toPrint = str(rowNum)
         print(" " * (10 - len(toPrint)) + toPrint, end='\r')
 
+    # read stop list
+    with open(str(pathConfig['stopLst']), 'r') as f:
+        stopLst = json.load(f)
+    f.close()
+
+    # filter out stop words
+    noStopWords = []
+    for sentNum, sentence in enumerate(tokenizedLst):
+        temp = []
+        for word in sentence:
+            if not word in stopLst:
+                temp.append(word)
+        noStopWords.append(temp)        
+        toPrint = str(sentNum)
+        print(" " * (10 - len(toPrint)) + toPrint, end='\r')
+    # output
     with open(str(pathConfig['tokenizedFile']), 'w') as opFile:
-        json.dump(tokenizedLst, opFile)
+        json.dump(noStopWords, opFile)
     opFile.close()
 
 def jsonFileReader(dirPathStr):

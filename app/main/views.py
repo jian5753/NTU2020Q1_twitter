@@ -30,19 +30,26 @@ def index():
 def dataManagement():
     rawDataPath = pathConfig['raw']
     ifRawExists = rawDataPath.exists()
+    ifTokenizedExists = pathConfig['tokenizedFile'].exists()
     return(
         render_template(
             'dataManagement.html',
             rawDataPath = rawDataPath,
-            ifRawExists = ifRawExists
+            ifRawExists = ifRawExists,
+            tokenizedDataPath = pathConfig['tokenizedFile'],
+            ifTokenizedExists = ifTokenizedExists,
+            stopLstPath = pathConfig['stopLst'],
+            ifStopLstExists = pathConfig['stopLst'].exists()
         )
     )
+
 
 @main.route('/dataManagement/refresh', methods = ['GET', 'POST'])
 def dataFlowRefresh():
     print(len(list(pathConfig['raw'].glob("*.json"))))
     inFunc.allRawGen(pathConfig['raw'])
     inFunc.tokenizedGen()
+
     return redirect('/dataManagement')
 
 
