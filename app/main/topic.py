@@ -20,7 +20,7 @@ class Topic():
 
     def emptySelf(self):
         self.keyWords = dict()
-        
+
     def topicRelation(self):
         for key in self.keyWords:
             print(self.model.wv.most_similar(key))

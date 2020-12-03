@@ -59,9 +59,21 @@ def wvModelRetrain():
     return redirect('/dataManagement')
 @main.route('/topicManagement', methods = ['GET'])
 def topicManagement():
+    topicPathLst = list(pathConfig['modelFolder'].glob('*.topic'))
+    topicLst = []
+    for path in topicPathLst:
+        with open(str(path), 'rb') as f:
+            obj = pickle.load(f)
+            tempDict = dict()
+            tempDict[obj.topicName] = obj.keyWords
+            topicLst.append(tempDict)
+        f.close()
+
+    
     return(
         render_template(
-            'topicManagement.html'
+            '/topicManagement.html',
+            topicLst= topicLst
         )
     )
 @main.route('/topicManagement/addTopic', methods = ['GET', 'POST'])
