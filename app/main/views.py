@@ -1,7 +1,8 @@
+from sys import path
 from flask import render_template, session, redirect
 from gensim.models.word2vec import Word2Vec
 from . import main
-from .forms import KeyWordForm, wordStatForm, NewTopicForm, EditTopicForm, DeleteTopicForm
+from . import forms
 from . import infunction as inFunc
 from . import topic
 import pandas as pd
@@ -78,7 +79,7 @@ def topicManagement():
     )
 @main.route('/topicManagement/addTopic', methods = ['GET', 'POST'])
 def topics():
-    form = NewTopicForm()
+    form = forms.NewTopicForm()
 
     if form.validate_on_submit():
         topicName = form.topicName.data
@@ -100,7 +101,7 @@ def topics():
     )
 @main.route('/topicManagement/edit', methods = ['GET', 'POST'])
 def topicEditor():
-    form = EditTopicForm()
+    form = forms.EditTopicForm()
     form.topicToEdit.choices = [x.stem for x in list(pathConfig['modelFolder'].glob('*.topic'))]
 
     if form.validate_on_submit():
@@ -134,7 +135,7 @@ def topicEditor():
 
 @main.route('/topicManagement/delete', methods= ['GET', 'POST'])
 def deleteTopic():
-    form = DeleteTopicForm()
+    form = forms.DeleteTopicForm()
     form.topicToDel.choices = [(x.stem, x.stem) for x in list(pathConfig['modelFolder'].glob('*.topic'))]
 
     if form.validate_on_submit():
@@ -156,15 +157,18 @@ def deleteTopic():
        )
     ) 
 
+
+
 @main.route('/authorStat', methods= ['GET', 'POST'])
 def authorStat():
-    form = KeyWordForm()
+    form = forms.KeyWordForm()
     tempDF = inFunc.authorStat(pathConfig['woJapFile'])
 
     if form.validate_on_submit():
         session['keyword'] = form.searchKey.data
         print(session['keyword'])
         tempDF = tempDF.filter(regex=f".*{session['keyword']}.*", axis= 0).sort_index(ascending= True)
+        
 
     return(
         render_template('authorStat.html',
@@ -175,7 +179,7 @@ def authorStat():
 
 @main.route('/wordStat', methods= ['GET', 'POST'])
 def wordStat():
-    form= wordStatForm()
+    form= forms.wordStatForm()
     tempDF = inFunc.wordStat(pathConfig['woJapFile'], pathConfig['tokenizedFile'])
 
     if form.validate_on_submit():
@@ -208,8 +212,8 @@ def clusterAnalysis():
         )
     )
 
-@main.route('/topicTag')
-def topicTag():
+@main.route('/topicTag_old')
+def topicTag_old():
     with open(pathConfig['dataStream'].joinpath('tokenizedLower.json')) as f:
         tokenizedSents = json.load(f)
     f.close()
@@ -231,4 +235,101 @@ def topicTag():
             'topicTag.html',
             tableLst = tableLst
        )
+    )
+
+@main.route('/topicTag')
+def topicTag():
+    return(
+        render_template(
+            'topicTag.html'
+        )
+    )
+
+@main.route('/topicTag/loadTopic')
+def loadTopic():
+    topicPathLst = [str(x) for x in list(pathConfig['modelFolder'].glob('*.topic'))]
+    for path in topicPathLst:
+        with open(str(path), 'rb') as f:
+            targetTopic = pickle.load(f)
+        f.close()
+
+        targetTopic.loadModel(str(pathConfig['w2vModel']))
+        targetTopic.relatedWords()
+        with open(str(path), 'wb') as f:
+            pickle.dump(targetTopic, f)
+        f.close()
+    return(
+        redirect('/topicTag')
+    )
+
+@main.route('/topicTag/tagGen')
+def tagGen():
+    rawDf = pd.read_json(pathConfig['woJapFile'], orient= 'split').iloc[:, :]
+    rawDf.index = range(1, len(rawDf) + 1)
+
+    with open(str(pathConfig['tokenizedFile']), 'r') as f:
+        tokenizedSents = json.load(f)
+    f.close()
+
+    topicLst = [str(x) for x in list(pathConfig['modelFolder'].glob('*.topic'))]
+
+    for topicPath in topicLst:
+        with open(topicPath, 'rb') as f:
+            topic = pickle.load(f)
+        f.close()
+        
+        scoreLst = []
+        for rowNum, rowData in rawDf.iterrows():
+            score = topic.topicRelation(tokenizedSents[rowNum - 1])
+            scoreLst.append(score)
+            toPrint = str(rowNum)
+            print(" " * (10 - len(toPrint)) + toPrint, end='\r')
+        rawDf[topic.topicName] = scoreLst
+   
+    rawDf.drop(columns=['author', 'pubdate', 'NumFavorite', 'NumShare', 'CrawlerDate'], inplace= True)
+    rawDf.to_json(pathConfig['tagOutput'], orient= 'split')
+    return(
+        redirect('/topicTag')
+    )
+
+@main.route('/topicTag/relatedWords', methods= ['GET', 'POST'])
+def relatedWords():
+    form = forms.SelectOneTopic()
+    form.theTopic.choices = [(x.stem, x.stem) for x in list(pathConfig['modelFolder'].glob('*.topic'))]
+    rWordsTb = pd.DataFrame().to_html()
+    if form.validate_on_submit():
+        topicName = form.theTopic.data
+        topicObjPath = list(pathConfig['modelFolder'].glob(f'{topicName}.topic'))[0]
+        with open(str(topicObjPath), 'rb') as f:
+            targetTopic = pickle.load(f)
+        f.close()
+        
+        rWordsTb = targetTopic.relatedWordsDf.to_html()
+    
+    return(
+        render_template(
+            'tag_relatedWords.html',
+            form= form,
+            rWordsTb= rWordsTb
+        )
+    )
+
+@main.route('/topicTag/result', methods= ['POST', 'GET'])
+def tagResult():
+    form = forms.SelectOneTopic()
+    form.theTopic.choices = [(x.stem, x.stem) for x in list(pathConfig['modelFolder'].glob('*.topic'))]
+
+    tagDf = pd.read_json(pathConfig['tagOutput'], orient= 'split')
+    toShow = pd.DataFrame().to_html()
+
+    if form.validate_on_submit():
+        topicName = form.theTopic.data
+        toShow = tagDf.sort_values(by= topicName, ascending= False).head(20).to_html()
+        
+    return(
+        render_template(
+            'tagGen.html',
+            form= form,
+            toShow= toShow
+        )
     )

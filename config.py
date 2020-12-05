@@ -54,7 +54,8 @@ pathConfig={
     'woJapFile': pathlib.Path(__file__).parent.joinpath('dataStream/woJap.json'),
     'modelFolder': pathlib.Path(__file__).parent.joinpath('models'),
     'w2vModel': pathlib.Path(__file__).parent.joinpath('models/twitterW2Vmodel.model'),
-    'circleTb': pathlib.Path(__file__).parent.joinpath('dataStream/circleTb.json')
+    'circleTb': pathlib.Path(__file__).parent.joinpath('dataStream/circleTb.json'),
+    'tagOutput': pathlib.Path(__file__).parent.joinpath('dataStream/tagOutput.json')
 }
 
 

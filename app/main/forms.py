@@ -36,3 +36,7 @@ class EditTopicForm(FlaskForm):
 class DeleteTopicForm(FlaskForm):
     topicToDel = SelectMultipleField('select topics')
     submit = SubmitField('delete')
+
+class SelectOneTopic(FlaskForm):
+    theTopic = SelectField('select a topic')
+    submit = SubmitField('select')
