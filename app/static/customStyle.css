@@ -1,0 +1,16 @@
+div.currentStopLst{
+    width: 100%;
+    height: 200px;
+    overflow: auto;
+}
+
+table.test{
+    color: black;
+}
+tr.test{
+    line-height: 20px;
+}
+th.test, tr.test, td.test{
+    text-align: left;
+    line-height: 30px;
+}

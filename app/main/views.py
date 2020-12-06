@@ -1,6 +1,7 @@
 from sys import path
 from flask import render_template, session, redirect
 from gensim.models.word2vec import Word2Vec
+from nltk.corpus.reader.chasen import test
 from . import main
 from . import forms
 from . import infunction as inFunc
@@ -15,12 +16,24 @@ import pickle
 @main.route('/', methods=['GET','POST'])
 def index():
     session['articleCnt'], session['twitterRawDf'] = inFunc.jsonFileReader(pathConfig['raw'])
-    print(f'============={session["articleCnt"]}==========')
 
     return (
         render_template('index.html',
             articleCnt=session.get('articleCnt'),
             twitterRawDf = session.get('twitterRawDf')
+        )
+    )
+
+@main.route('/stopLstMng', methods= ['GET', 'POST'])
+def stopLstMng():
+    with open(str(pathConfig['stopLst']), 'r') as f:
+        stopLst = json.load(f)
+    f.close()
+
+    return(
+        render_template(
+            'stopLstMng.html',
+            stopLst= stopLst
         )
     )
 
@@ -324,7 +337,7 @@ def tagResult():
 
     if form.validate_on_submit():
         topicName = form.theTopic.data
-        toShow = tagDf.sort_values(by= topicName, ascending= False).head(20).to_html()
+        toShow = tagDf.sort_values(by= topicName, ascending= False).head(20).to_html(classes= 'table table-hover bg-dark')
         
     return(
         render_template(
