@@ -8,6 +8,7 @@
 /dataStream/tokenized.json
 /dataStream/tokenizedLower.json
 /dataStream/tokenizedSent.json
+/dataStream/woJap.json
 /jptnbTest
 **/*.ipynb_checkpoints
 /models/**/*.model
