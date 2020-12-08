@@ -9,7 +9,6 @@ from sklearn.cluster import KMeans
 from config import pathConfig
 
 def json2df(dirPath):
-    print('function called - json2df')
     dataLst = []
     if dirPath.exists():
         for jsonFile in dirPath.glob('*.json'):
@@ -46,16 +45,23 @@ def tokenizedGen():
         stopLst = json.load(f)
     f.close()
 
+    # read stop rule
+    stopRule = json.load(open(pathConfig['stopRule'], 'r'))
+
     # filter out stop words
     noStopWords = []
     for sentNum, sentence in enumerate(tokenizedLst):
         temp = []
         for word in sentence:
             if not word in stopLst:
-                temp.append(word)
+                if len(word) > stopRule['length lower bound'] and len(word) < stopRule['length upper bound']:
+                    temp.append(word)
         noStopWords.append(temp)        
         toPrint = str(sentNum)
         print(" " * (10 - len(toPrint)) + toPrint, end='\r')
+
+        
+
     # output
     with open(str(pathConfig['tokenizedFile']), 'w') as opFile:
         json.dump(noStopWords, opFile)
@@ -74,6 +80,7 @@ def jsonFileReader(dirPathStr):
                 dataLst.extend(jfData)
             jf.close()
 
+    articleCnt = 0
     try:
         articleCnt = len(dataLst)
         twitterRawDf = pd.DataFrame(dataLst).sample(n= 15).to_html(classes='data')

@@ -34,7 +34,6 @@ class Topic():
             temp = temp.append(pd.DataFrame([[key, 1]], columns = ['word', 'similarity']))
             view = view.append(temp)
         self.relatedWordsDf = pd.DataFrame(view.groupby(by=['word']).max()).sort_values(by= 'similarity', ascending= False)
-        print(self.relatedWordsDf)
 
     def topicRelation(self, sentence):
         scoreDict = self.relatedWordsDf.to_dict()['similarity']
@@ -44,5 +43,8 @@ class Topic():
                 score += scoreDict[word]
             except KeyError:
                 continue
-        
-        return score / len(sentence)
+        if score == 0:
+            return 0
+        else:
+            return score / len(sentence)
+

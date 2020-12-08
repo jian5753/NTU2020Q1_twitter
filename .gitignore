@@ -3,7 +3,11 @@
 /twitterVenv
 .DS_Store
 .vscode
-/dataStream/**/*.json
+/dataStream/raw/**/*.json
+/dataStream/tagOutPut.json
+/dataStream/tokenized.json
+/dataStream/tokenizedLower.json
+/dataStream/tokenizedSent.json
 /jptnbTest
-/.ipynb_checkpoints
+**/*.ipynb_checkpoints
 /models/**/*.model

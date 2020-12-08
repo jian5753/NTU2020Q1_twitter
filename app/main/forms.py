@@ -40,3 +40,16 @@ class DeleteTopicForm(FlaskForm):
 class SelectOneTopic(FlaskForm):
     theTopic = SelectField('select a topic')
     submit = SubmitField('select')
+
+class AddStopWord(FlaskForm):
+    stopWord = StringField('add stop words')
+    submit = SubmitField('add')
+
+class AddStopRule(FlaskForm):
+    stopRuleType = SelectField(
+        'select a type',
+        choices= ['length lower bound', 'length upper bound', 'regex']
+    )
+    stopRule_bound = IntegerField('bound')
+    stopRule_regex = StringField('regex')
+    submit = SubmitField('add')

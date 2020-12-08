@@ -26,14 +26,36 @@ def index():
 
 @main.route('/stopLstMng', methods= ['GET', 'POST'])
 def stopLstMng():
+    form = forms.AddStopWord()
+    form2 = forms.AddStopRule()
     with open(str(pathConfig['stopLst']), 'r') as f:
         stopLst = json.load(f)
     f.close()
 
+    if form.validate_on_submit():
+        with open(str(pathConfig['stopLst']), 'w') as f:
+            listToAdd = form.stopWord.data.split()
+            stopLst.extend(listToAdd)
+            json.dump(stopLst, f)
+        f.close()
+
+    ruleDict = json.load(open(pathConfig['stopRule']))
+    if form2.validate_on_submit():
+        ruleType = form2.stopRuleType.data
+        if ruleType == 'regex':
+            ruleDict[ruleType].append(form2.stopRule_regex.data)
+        else:
+            ruleDict[ruleType] = form2.stopRule_bound.data
+        json.dump(ruleDict, open(pathConfig['stopRule'], 'w'))
+        print(ruleDict)
+        
     return(
         render_template(
             'stopLstMng.html',
-            stopLst= stopLst
+            stopLst= stopLst,
+            ruleDict = ruleDict,
+            form = form,
+            form2 = form2
         )
     )
 
@@ -57,7 +79,6 @@ def dataManagement():
 
 @main.route('/dataManagement/refresh', methods = ['GET', 'POST'])
 def dataFlowRefresh():
-    print(len(list(pathConfig['raw'].glob("*.json"))))
     inFunc.allRawGen(pathConfig['raw'])
     inFunc.tokenizedGen()
 
@@ -317,7 +338,7 @@ def relatedWords():
             targetTopic = pickle.load(f)
         f.close()
         
-        rWordsTb = targetTopic.relatedWordsDf.to_html()
+        rWordsTb = targetTopic.relatedWordsDf.to_html(classes= "table table-hover")
     
     return(
         render_template(
