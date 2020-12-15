@@ -56,6 +56,8 @@ def tokenizedGen():
             if not word in stopLst:
                 if len(word) > stopRule['length lower bound'] and len(word) < stopRule['length upper bound']:
                     temp.append(word)
+
+        
         noStopWords.append(temp)        
         toPrint = str(sentNum)
         print(" " * (10 - len(toPrint)) + toPrint, end='\r')
