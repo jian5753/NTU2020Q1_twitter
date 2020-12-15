@@ -14,3 +14,7 @@ th.test, tr.test, td.test{
     text-align: left;
     line-height: 30px;
 }
+
+div.page_content{
+    background-image: url("./assets/img/city.jpg");
+}

@@ -1,0 +1,22 @@
+{% extends "bootstrap/base.html" %}
+
+{%import "bootstrap/wtf.html" as wtf%}
+
+{% block title %}Welcome{% endblock %}
+{% block styles %}
+{{super()}}
+	<link rel="stylesheet" href="{{url_for('static', filename='customStyle.css')}}">
+{% endblock %}
+
+{%block masthead%}
+    <!-- Masthead-->
+<header class="masthead">
+    <div class="container">
+        <div class="masthead-subheading">Welcome To Our Studio!</div>
+        <div class="masthead-heading text-uppercase">Today's Top Tweet
+
+        </div>
+        <triggera class="btn btn-primary btn-xl text-uppercase js-scroll-" href="#services">search</a>
+    </div>
+</header>
+{% endblock %}
