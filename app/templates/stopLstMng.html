@@ -5,22 +5,24 @@
 
 
 {%block page_content%}
-<div class="page_content">
-	<h1>stop list management</h1>
-</div>
-<div class='currentStopLst'>
-	<ul>
-		{% for item in stopLst %}
-		<li> {{item}}</li>
-		{% endfor %}
-	</ul>
+<div class="container marginTop">
+	<div class="page_content">
+		<h1>stop list management</h1>
+	</div>
+	<div class='currentStopLst'>
+		<ul>
+			{% for item in stopLst %}
+			<li> {{item}}</li>
+			{% endfor %}
+		</ul>
+		
+	</div>
+	{{wtf.quick_form(form, form_type="horizontal")}}
 	
-</div>
-{{wtf.quick_form(form, form_type="horizontal")}}
-
-<div class="form-row align-items-center">
-	<h1>stop rules</h1>
-	{{ruleDict}}
-	{{wtf.quick_form(form2, form_type="horizontal")}}
+	<div class="form-row align-items-center">
+		<h1>stop rules</h1>
+		{{ruleDict}}
+		{{wtf.quick_form(form2, form_type="horizontal")}}
+	</div>
 </div>
 {%endblock%}

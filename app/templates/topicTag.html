@@ -4,16 +4,17 @@
 {%block title%}topic tag{%endblock%}
 
 {%block page_content%}
-<div class="page_content">
-	<h1>topic tag</h1>
+<div class="container marginTop">
+	<div class="page_content">
+		<h1>topic tag</h1>
+	</div>
+	<div class="page_content">
+		<input type="button" onclick="location.href='/topicTag/loadTopic'" value="load topic">
+		<input type="button" onclick="location.href='/topicTag/tagGen'" value="generate topic tag">
+		<input type="button" onclick="location.href='/topicTag/relatedWords'" value="topic related words">
+	</div>
+	<div class="page_content">
+		<input type="button" onclick="location.href='/topicTag/result'" value="view result">
+	</div>
 </div>
-<div class="page_content">
-	<input type="button" onclick="location.href='/topicTag/loadTopic'" value="load topic">
-	<input type="button" onclick="location.href='/topicTag/tagGen'" value="generate topic tag">
-	<input type="button" onclick="location.href='/topicTag/relatedWords'" value="topic related words">
-</div>
-<div class="page_content">
-	<input type="button" onclick="location.href='/topicTag/result'" value="view result">
-</div>
-
 {%endblock%}

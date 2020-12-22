@@ -4,18 +4,20 @@
 {%block title%}data management{%endblock%}
 
 {%block page_content%}
-<div class="page_content">
-	<h1>data management</h1>
-	<p>
-		raw data path: {{rawDataPath}}, existence check: {{ifRawExists}}
-	</p>
-	<p>
-		tokenized data: {{tokenizedDataPath}}, existence check: {{ifTokenizedExists}}
-	</p>
-	<p>
-		stop list: {{stopLstPath}}, existence check: {{ifStopLstExists}}
-	</p>
-	<input type="button" onclick="location.href='/dataManagement/refresh'" value="refresh data stream">
-	<input type="button" onclick="location.href='/dataManagement/retrain'" value="retrain w2v model">
+<div class="container marginTop">
+	<div class="page_content">
+		<h1>data management</h1>
+		<p>
+			raw data path: {{rawDataPath}}, existence check: {{ifRawExists}}
+		</p>
+		<p>
+			tokenized data: {{tokenizedDataPath}}, existence check: {{ifTokenizedExists}}
+		</p>
+		<p>
+			stop list: {{stopLstPath}}, existence check: {{ifStopLstExists}}
+		</p>
+		<input type="button" onclick="location.href='/dataManagement/refresh'" value="refresh data stream">
+		<input type="button" onclick="location.href='/dataManagement/retrain'" value="retrain w2v model">
+	</div>
 </div>
 {%endblock%}
