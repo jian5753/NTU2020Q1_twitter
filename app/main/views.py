@@ -31,6 +31,7 @@ def stopLstMng():
     with open(str(pathConfig['stopLst']), 'r') as f:
         stopLst = json.load(f)
     f.close()
+    stopLst.sort()
 
     if form.validate_on_submit():
         with open(str(pathConfig['stopLst']), 'w') as f:
@@ -48,12 +49,18 @@ def stopLstMng():
             ruleDict[ruleType] = form2.stopRule_bound.data
         json.dump(ruleDict, open(pathConfig['stopRule'], 'w'))
         print(ruleDict)
+    
+    ruleTb = pd.DataFrame(columns=['rule type', 'rule'])
+    ruleTb.loc[0] = ['length lower bound', ruleDict['length lower bound']]
+    ruleTb.loc[1] = ['length upper bound', ruleDict['length upper bound']]
+    for i, regexRule in enumerate(ruleDict['regex']):
+        ruleTb.loc[i+2] = ['regex', regexRule]
         
     return(
         render_template(
             'stopLstMng.html',
             stopLst= stopLst,
-            ruleDict = ruleDict,
+            ruleTb = ruleTb.to_html(index= False),
             form = form,
             form2 = form2
         )

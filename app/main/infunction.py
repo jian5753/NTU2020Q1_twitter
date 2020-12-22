@@ -7,6 +7,8 @@ from nltk.corpus import stopwords
 from gensim.models import Word2Vec
 from sklearn.cluster import KMeans
 from config import pathConfig
+import re
+import copy
 
 def json2df(dirPath):
     dataLst = []
@@ -48,25 +50,46 @@ def tokenizedGen():
     # read stop rule
     stopRule = json.load(open(pathConfig['stopRule'], 'r'))
 
-    # filter out stop words
-    noStopWords = []
+    # filter out stop words -- length bound
+    remainWords = []
+    bigTemp = []
     for sentNum, sentence in enumerate(tokenizedLst):
         temp = []
         for word in sentence:
-            if not word in stopLst:
-                if len(word) > stopRule['length lower bound'] and len(word) < stopRule['length upper bound']:
+            if len(word) > stopRule['length lower bound'] and len(word) < stopRule['length upper bound']:
                     temp.append(word)
+        bigTemp.append(temp)        
+        toPrint = 'length bound' + str(sentNum)
+        print(" " * (30 - len(toPrint)) + toPrint, end='\r')
 
-        
-        noStopWords.append(temp)        
-        toPrint = str(sentNum)
-        print(" " * (10 - len(toPrint)) + toPrint, end='\r')
-
-        
-
+    remainWords = copy.deepcopy(bigTemp)
+    bigTemp = []
+    for sentNum, sentence in enumerate(remainWords):
+        temp = []
+        for word in sentence:
+            if not word in stopLst:
+                temp.append(word)
+        bigTemp.append(temp)
+        toPrint = 'stop list' + str(sentNum) + " "
+        print(" " * (30 - len(toPrint)) + toPrint, end='\r')
+    
+    remainWords = copy.deepcopy(bigTemp)
+    bigTemp = []
+    for sentNum, sentence in enumerate(remainWords):
+        temp = []
+        firstReg = re.compile(stopRule['regex'][0])
+        for word in sentence:
+            if not re.match(firstReg, word):
+                temp.append(word)
+        for pattern in stopRule['regex'][1:]:
+            regex = re.compile(pattern)
+            for word in temp:
+                if re.match(regex, word):
+                    temp.remove(word)
+        bigTemp.append(temp)
     # output
     with open(str(pathConfig['tokenizedFile']), 'w') as opFile:
-        json.dump(noStopWords, opFile)
+        json.dump(bigTemp, opFile)
     opFile.close()
 
 def jsonFileReader(dirPathStr):
