@@ -4,11 +4,20 @@
 {%block title%}Flasky{%endblock%}
 
 {%block page_content%}
-<div class="page_content">
-	<h1>there's {{articleCnt}} json files in this folder</h1>
+<div class="landing">
+	<div class="landing-text">
+		<div class="heading">Welcome To Our Studio!</div>
+		<div class="subheading">Today's Top Tweet</div>
+	</div>
+	<!-- <triggera class="btn btn-primary btn-xl text-uppercase js-scroll-" href="#services">search</a> -->
 </div>
-<div class="page_content">
-	{{twitterRawDf|safe}}
+<div class="container">
+	<div class="page_content">
+		<h1 class="marginTop50">there's {{articleCnt}} json files in this folder</h1>
+	</div>
+	<div class="page_content">
+		{{twitterRawDf|safe}}
+	</div>
+	<button class="marginBottom" onClick="window.location.reload();">Refresh Page</button>
 </div>
-<button onClick="window.location.reload();">Refresh Page</button>
 {%endblock%}
