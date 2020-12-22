@@ -12,3 +12,4 @@
 /jptnbTest
 **/*.ipynb_checkpoints
 /models/**/*.model
+**/*.rar
