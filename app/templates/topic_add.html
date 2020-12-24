@@ -4,12 +4,14 @@
 {%block title%}topic management{%endblock%}
 
 {%block page_content%}
-<div class="page_content">
-	<h1>add new topic</h1>
-</div>
-{{wtf.quick_form(form)}}
-<div class="page_content">
-	<p style="font-size: 50pt;"> &nbsp</p>
+<div class="container marginTop">
+	<div class="page_content">
+		<h1>add new topic</h1>
+	</div>
+		{{wtf.quick_form(form)}}
+	<div class="page_content">
+		<p style="font-size: 50pt;"> &nbsp</p>
 	<input type="button" onclick="location.href='/topicManagement'" value="go back">
+	</div>
 </div>
 {%endblock%}

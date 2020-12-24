@@ -4,13 +4,15 @@
 {%block title%}edit topic{%endblock%}
 
 {%block page_content%}
-<div class="page_content">
-	<h1>edit topic</h1>
-	<h2>edit an existing topic</h2>
-</div>
-{{wtf.quick_form(form)}}
-<div class="page_content">
-	<p style="font-size: 50pt;"> &nbsp</p>
-	<input type="button" onclick="location.href='/topicManagement'" value="go back">
+<div class="container marginTop">
+	<div class="page_content">
+		<h1>edit topic</h1>
+		<h2>edit an existing topic</h2>
+	</div>
+	{{wtf.quick_form(form)}}
+	<div class="page_content">
+		<p style="font-size: 50pt;"> &nbsp</p>
+		<input type="button" onclick="location.href='/topicManagement'" value="go back">
+	</div>
 </div>
 {%endblock%}
