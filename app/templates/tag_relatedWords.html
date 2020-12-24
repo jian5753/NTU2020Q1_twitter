@@ -4,14 +4,19 @@
 {%block title%}related words{%endblock%}
 
 {%block page_content%}
-<div class="page_content">
-	<h1>related words</h1>
-</div>
-{{wtf.quick_form(form)}}
-<div class="page_content">
-	{{rWordsTb|safe}}
-</div>
-<div class="page_content">
-	<input type="button" onclick="location.href='/topicTag'" value="go back">
+<div class="container marginTop">
+	<div class="container">
+		<h1 class="float-left">related words</h1>
+		{{wtf.quick_form(form, form_type="inline", id="topic-select")}}
+	</div>
+		
+	<div id="table-wrapper">
+		<div id="table-scroll">
+			{{rWordsTb|safe}}
+		</div>
+	</div>
+	<div class="page_content">
+		<input type="button" onclick="location.href='/topicTag'" value="go back">
+	</div>
 </div>
 {%endblock%}

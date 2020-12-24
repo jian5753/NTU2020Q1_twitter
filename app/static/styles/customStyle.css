@@ -3,8 +3,12 @@ body {
     background-color: #FFFFFA;
 }
 
-h1 {
+h1{
     color: #33658A;
+}
+
+h2{
+    color: #1ab4fb;
 }
 
 input:focus, .formControl:focus {
@@ -77,6 +81,7 @@ input:focus, .formControl:focus {
 /* Table ------- */
 table {
     border: 1px solid #33658A;
+    overflow: scroll;
 }
 
 thead {
@@ -95,11 +100,32 @@ thead th, thead td {
 tbody th, tbody td {
     padding: 10px 5px;
 }
+
 tbody tr:hover {
     color: #495057;
     background-color: #e9ecef;
 }
+#table-wrapper {
+    position:relative;
+}
+#table-scroll {
+    height:500px;
+    overflow:auto;  
+    margin-top:20px;
+}
+#table-wrapper table {
+    width:100%;
+  
+}
 
+#table-wrapper table thead th .text {
+    position:absolute;   
+    top:-20px;
+    z-index:2;
+    height:20px;
+    width:35%;
+    border:1px solid red;
+}
 /* Button ------- */
 button, .btn, input[type=button] {
     padding: 5px 20px;
@@ -152,6 +178,17 @@ button:hover, .btn:hover {
 }
 
 .flex-wrap-wrap {
-    height: 400px;
+    height: 500px;
     flex-wrap: wrap;
+    overflow: auto;
+}
+
+#width-narrow{
+    width: 25%;
+}
+
+#topic-select{
+    margin-top: 20px;
+    margin-right: 20px;
+    float:right;
 }

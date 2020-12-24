@@ -60,7 +60,7 @@ def stopLstMng():
         render_template(
             'stopLstMng.html',
             stopLst= stopLst,
-            ruleTb = ruleTb.to_html(index= False),
+            ruleTb = ruleTb.to_html(index= False, classes= "table table-hover"),
             form = form,
             form2 = form2
         )
@@ -336,8 +336,13 @@ def tagGen():
 @main.route('/topicTag/relatedWords', methods= ['GET', 'POST'])
 def relatedWords():
     form = forms.SelectOneTopic()
-    form.theTopic.choices = [(x.stem, x.stem) for x in list(pathConfig['modelFolder'].glob('*.topic'))]
-    rWordsTb = pd.DataFrame().to_html()
+    topicPickles = list(pathConfig['modelFolder'].glob('*.topic'))
+    form.theTopic.choices = [(x.stem, x.stem) for x in topicPickles]
+    with open(str(topicPickles[0]), 'rb') as f:
+        targetTopic = pickle.load(f)
+    f.close()
+    rWordsTb = targetTopic.relatedWordsDf.reset_index()
+
     if form.validate_on_submit():
         topicName = form.theTopic.data
         topicObjPath = list(pathConfig['modelFolder'].glob(f'{topicName}.topic'))[0]
@@ -345,13 +350,13 @@ def relatedWords():
             targetTopic = pickle.load(f)
         f.close()
         
-        rWordsTb = targetTopic.relatedWordsDf.to_html(classes= "table table-hover")
+        rWordsTb = targetTopic.relatedWordsDf.reset_index()
     
     return(
         render_template(
             'tag_relatedWords.html',
             form= form,
-            rWordsTb= rWordsTb
+            rWordsTb= rWordsTb.to_html(index=False, classes= "table table-hover")
         )
     )
 
@@ -361,16 +366,16 @@ def tagResult():
     form.theTopic.choices = [(x.stem, x.stem) for x in list(pathConfig['modelFolder'].glob('*.topic'))]
 
     tagDf = pd.read_json(pathConfig['tagOutput'], orient= 'split')
-    toShow = pd.DataFrame().to_html()
+    toShow = tagDf.sort_values(by= tagDf.columns[1], ascending= False).head(50)
 
     if form.validate_on_submit():
         topicName = form.theTopic.data
-        toShow = tagDf.sort_values(by= topicName, ascending= False).head(20).to_html(classes= 'table table-hover bg-dark')
+        toShow = tagDf.sort_values(by= topicName, ascending= False).head(50)
         
     return(
         render_template(
             'tagGen.html',
             form= form,
-            toShow= toShow
+            toShow= toShow.to_html(index=False, classes= 'table table-hover bg-dark')
         )
     )
