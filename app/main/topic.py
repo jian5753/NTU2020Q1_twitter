@@ -40,14 +40,10 @@ class Topic():
 
         for key in self.keyWords:
             if self.keyWords[key] <= 0:
-                for rowNum, rowData in view.iterrows():
-                    if rowData['word'] == key:
-                        view.iloc[rowNum, 1] *= self.keyWords[key]
-
+                view.loc[view['word'] == key, 'similarity']*= self.keyWords[key]
 
         view2 = pd.DataFrame(view.groupby(by=['word']).max()).sort_values(by= 'similarity', ascending= False)
         self.relatedWordsDf = view2[view2['similarity'] > 0]
-        print(self.relatedWordsDf)
 
     def topicRelation(self, sentence):
         scoreDict = self.relatedWordsDf.to_dict()['similarity']
