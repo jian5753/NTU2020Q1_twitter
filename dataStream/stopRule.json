@@ -1,1 +1,1 @@
-{"regex": ["http.*", "@.*", "^([-+] ?)?[0-9]+(,[0-9]+)?$"], "length lower bound": 2, "length upper bound": 30}
+{"regex": ["^\\d*\\.?\\d*$"], "length lower bound": 0, "length upper bound": 100}

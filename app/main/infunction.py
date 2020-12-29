@@ -75,17 +75,28 @@ def tokenizedGen():
     
     remainWords = copy.deepcopy(bigTemp)
     bigTemp = []
-    for sentNum, sentence in enumerate(remainWords):
+    for sentNum, sentence in enumerate(remainWords[:]):
         temp = []
-        firstReg = re.compile(stopRule['regex'][0])
-        for word in sentence:
-            if not re.match(firstReg, word):
-                temp.append(word)
-        for pattern in stopRule['regex'][1:]:
-            regex = re.compile(pattern)
-            for word in temp:
-                if re.match(regex, word):
-                    temp.remove(word)
+        try:
+            firstReg = re.compile(stopRule['regex'][0])
+        except IndexError:
+            bigTemp = remainWords
+            break
+        else:
+            for word in sentence:
+                if not re.match(firstReg, word):
+                    temp.append(word)
+                else:
+                    continue
+                    #print(word)
+            for pattern in stopRule['regex'][1:]:
+                regex = re.compile(pattern)
+                for word in temp:
+                    if re.match(regex, word):
+                        temp.remove(word)
+                        #print(word)
+        toPrint = 'regex ' + str(sentNum) + " "
+        print(" " * (30 - len(toPrint)) + toPrint, end='\r')
         bigTemp.append(temp)
     # output
     with open(str(pathConfig['tokenizedFile']), 'w') as opFile:

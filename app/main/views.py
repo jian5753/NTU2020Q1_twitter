@@ -99,6 +99,7 @@ def wvModelRetrain():
     model = Word2Vec(sentences= sentences)
     model.save(str(pathConfig['w2vModel'])) 
     return redirect('/dataManagement')
+    
 @main.route('/topicManagement', methods = ['GET'])
 def topicManagement():
     topicPathLst = list(pathConfig['modelFolder'].glob('*.topic'))

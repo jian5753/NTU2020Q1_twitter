@@ -34,6 +34,7 @@ class Topic():
             temp = pd.DataFrame(columns=['word', 'similarity'])
             if self.keyWords[key] > 0:
                 temp = pd.DataFrame(self.model.wv.most_similar(key, topn=5), columns=['word', 'similarity'])
+                temp['similarity'] *= self.keyWords[key]
                 temp['belongTo'] = key
                 temp = temp.append(pd.DataFrame([[key, 1 * self.keyWords[key]]], columns = ['word', 'similarity']))
             view = view.append(temp)
