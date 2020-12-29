@@ -31,7 +31,7 @@ class EditTopicForm(FlaskForm):
     topicToEdit = SelectField('select a topic')
     newKeyWord = StringField('new key words')
     keyWordWeight = StringField('weights')
-    submit = SubmitField('add new topic')
+    submit = SubmitField('save change')
     
 class DeleteTopicForm(FlaskForm):
     topicToDel = SelectMultipleField('select topics')

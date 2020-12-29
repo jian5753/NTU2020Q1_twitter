@@ -1,5 +1,6 @@
 from gensim.models import Word2Vec
 from gensim.models.keyedvectors import WordEmbeddingSimilarityIndex
+from numpy.lib.shape_base import column_stack
 import pandas as pd
 
 class Topic():
@@ -30,10 +31,23 @@ class Topic():
     def relatedWords(self):
         view = pd.DataFrame(columns= ['word', 'similarity'])
         for key in self.keyWords:
-            temp = pd.DataFrame(self.model.wv.most_similar(key, topn=5), columns=['word', 'similarity'])
-            temp = temp.append(pd.DataFrame([[key, 1]], columns = ['word', 'similarity']))
+            temp = pd.DataFrame(columns=['word', 'similarity'])
+            if self.keyWords[key] > 0:
+                temp = pd.DataFrame(self.model.wv.most_similar(key, topn=5), columns=['word', 'similarity'])
+                temp['belongTo'] = key
+                temp = temp.append(pd.DataFrame([[key, 1 * self.keyWords[key]]], columns = ['word', 'similarity']))
             view = view.append(temp)
-        self.relatedWordsDf = pd.DataFrame(view.groupby(by=['word']).max()).sort_values(by= 'similarity', ascending= False)
+
+        for key in self.keyWords:
+            if self.keyWords[key] <= 0:
+                for rowNum, rowData in view.iterrows():
+                    if rowData['word'] == key:
+                        view.iloc[rowNum, 1] *= self.keyWords[key]
+
+
+        view2 = pd.DataFrame(view.groupby(by=['word']).max()).sort_values(by= 'similarity', ascending= False)
+        self.relatedWordsDf = view2[view2['similarity'] > 0]
+        print(self.relatedWordsDf)
 
     def topicRelation(self, sentence):
         scoreDict = self.relatedWordsDf.to_dict()['similarity']
